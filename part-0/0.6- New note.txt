@@ -1,0 +1,12 @@
+https://www.websequencediagrams.com/
+
+browser->server: HTTP POST http://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server
+server sends
+a basic message 
+to the browser
+to inform of success
+end note
+
+server-->browser: json-code: { message: "note created" }
