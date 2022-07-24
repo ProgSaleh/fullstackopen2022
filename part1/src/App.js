@@ -1,62 +1,25 @@
-const Header = (props) => <h1>{props.course}</h1>;
+import { useState } from "react";
 
-const Total = (props) => {
-  const { parts } = props;
+const Display = ({ value }) => <div>{value}</div>;
 
-  return (
-    <p>
-      <span>Number of exercises </span>
-      {parts[0].exercises + parts[1].exercises + parts[2].exercises}
-    </p>
-  );
-};
-
-const Part = (props) => {
-  const { part } = props;
-  return (
-    <p>
-      {part.name} {part.exercises}
-    </p>
-  );
-};
-
-const Content = (props) => {
-  const { parts } = props;
-  return (
-    <>
-      <Part part={parts[0]} />
-      <Part part={parts[1]} />
-      <Part part={parts[2]} />
-    </>
-  );
-};
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+);
 
 const App = () => {
-  const course = {
-    name: "Half Stack application development",
-    parts: [
-      {
-        name: "Fundamentals of React",
-        exercises: 10,
-      },
-      {
-        name: "Using props to pass data",
-        exercises: 7,
-      },
-      {
-        name: "State of a component",
-        exercises: 14,
-      },
-    ],
+  const [value, setValue] = useState(10);
+
+  const setToValue = (newValue) => {
+    console.log("value now", newValue);
+    setValue(newValue);
   };
 
   return (
     <div>
-      <Header course={course.name} />
-
-      <Content parts={course.parts} />
-
-      <Total parts={course.parts} />
+      <Display value={value} />
+      <Button handleClick={() => setToValue(1000)} text={"thousand"} />
+      <Button handleClick={() => setToValue(0)} text={"reset"} />
+      <Button handleClick={() => setToValue(value + 1)} text={"increment"} />
     </div>
   );
 };
