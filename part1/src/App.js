@@ -4,6 +4,8 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
+const AnecdoteHead = ({ text }) => <h1>{text}</h1>;
+
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -16,17 +18,40 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const generateNum = () =>
     Number(String(Math.random() * anecdotes.length).substring(0, 1));
 
+  const handleVotes = () => {
+    const updatedStateArr = [...votes];
+    updatedStateArr[selected] += 1;
+    setVotes(updatedStateArr);
+  };
+
+  const votesMax = Math.max(...votes);
+  let voteWinner = "";
+
+  votes.forEach((v) => {
+    if (v === votesMax) {
+      voteWinner = anecdotes[votes.indexOf(v)];
+    }
+  });
+
   return (
     <div>
+      <AnecdoteHead text="Anecdote of the day" />
       <p>{anecdotes[selected]}</p>
+      <p>
+        has {votes[selected]} {votes[selected] === 1 ? "vote" : "votes"}
+      </p>
+      <Button handleClick={handleVotes} text="vote" />
       <Button
         handleClick={() => setSelected(generateNum)}
         text="next anecdote"
       />
+      <AnecdoteHead text="Anecdote with most votes" />
+      <p>{voteWinner}</p>
     </div>
   );
 };
