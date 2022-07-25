@@ -20,31 +20,51 @@ const FeedbackStatValue = ({ text, value }) => (
   </div>
 );
 
+const Statistics = (props) => {
+  const { texts, good, neutral, bad, avg, positive } = props;
+
+  return (
+    <>
+      <FeedbackStatValue value={good + neutral + bad} text={texts[0]} />
+      <FeedbackStatValue value={avg} text={texts[1]} />
+      <FeedbackStatValue value={positive} text={texts[2]} />
+    </>
+  );
+};
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const average =
+  const avg =
     good || neutral || bad
       ? (good * 1 + neutral * 0 + bad * -1) / (good + neutral + bad)
       : 0;
   const positive =
     good || neutral || bad ? (good / (good + neutral + bad)) * 100 + " %" : 0;
 
+  const textArr = ["good", "neutral", "bad"];
+  const statTextArr = ["all", "average", "positive"];
+
   return (
     <>
       <FeedbackHead headText="Give feedback" />
-      <Button text="good" handleClick={() => setGood(good + 1)} />
-      <Button text="neutral" handleClick={() => setNeutral(neutral + 1)} />
-      <Button text="bad" handleClick={() => setBad(bad + 1)} />
+      <Button text={textArr[0]} handleClick={() => setGood(good + 1)} />
+      <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
+      <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
       <StatText text="Statistics" />
-      <FeedbackValue text="good" value={good} />
-      <FeedbackValue text="neutral" value={neutral} />
-      <FeedbackValue text="bad" value={bad} />
-      <FeedbackStatValue value={good + neutral + bad} text="all" />
-      <FeedbackStatValue value={average} text="average" />
-      <FeedbackStatValue value={positive} text="positive" />
+      <FeedbackValue text={textArr[0]} value={good} />
+      <FeedbackValue text={textArr[1]} value={neutral} />
+      <FeedbackValue text={textArr[2]} value={bad} />
+      <Statistics
+        texts={statTextArr}
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        avg={avg}
+        positive={positive}
+      />
     </>
   );
 };
