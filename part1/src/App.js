@@ -6,13 +6,23 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
-const StatText = ({ text }) => <p>{text}</p>;
+const StatText = ({ text }) => <h2>{text}</h2>;
 
-const FeedbackValue = ({ text, value }) => (
-  <div>
-    <span>{text}</span> <span>{value}</span>
-  </div>
-);
+const FeedbackValue = ({ text, values }) => {
+  const value =
+    text === "good" ? values[0] : text === "neutral" ? values[1] : values[2];
+
+  console.log("value", value);
+  if (!values[0] && !values[1] && !values[2]) {
+    return;
+  } else {
+    return (
+      <div>
+        <span>{text}</span> <span>{value}</span>
+      </div>
+    );
+  }
+};
 
 const FeedbackStatValue = ({ text, value }) => (
   <div>
@@ -22,6 +32,10 @@ const FeedbackStatValue = ({ text, value }) => (
 
 const Statistics = (props) => {
   const { texts, good, neutral, bad, avg, positive } = props;
+
+  if (!good && !neutral && !bad) {
+    return <p>No feedback given</p>;
+  }
 
   return (
     <>
@@ -54,9 +68,9 @@ const App = () => {
       <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
       <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
       <StatText text="Statistics" />
-      <FeedbackValue text={textArr[0]} value={good} />
-      <FeedbackValue text={textArr[1]} value={neutral} />
-      <FeedbackValue text={textArr[2]} value={bad} />
+      <FeedbackValue text={textArr[0]} values={[good, neutral, bad]} />
+      <FeedbackValue text={textArr[1]} values={[good, neutral, bad]} />
+      <FeedbackValue text={textArr[2]} values={[good, neutral, bad]} />
       <Statistics
         texts={statTextArr}
         good={good}
