@@ -8,11 +8,40 @@ const Button = ({ handleClick, text }) => (
 
 const StatText = ({ text }) => <h2>{text}</h2>;
 
-const StatisticLine = ({ text, value }) => (
-  <div>
-    <span>{text}</span> <span>{value}</span>
-  </div>
-);
+const StatisticsTable = (props) => {
+  const { valuesArr, textsArr, statTextArr, all, avg, positive } = props;
+
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <td>{textsArr[0]}</td>
+          <td>{valuesArr[0]}</td>
+        </tr>
+        <tr>
+          <td>{textsArr[1]}</td>
+          <td>{valuesArr[1]}</td>
+        </tr>
+        <tr>
+          <td>{textsArr[2]}</td>
+          <td>{valuesArr[2]}</td>
+        </tr>
+        <tr>
+          <td>{statTextArr[0]}</td>
+          <td>{all}</td>
+        </tr>
+        <tr>
+          <td>{statTextArr[1]}</td>
+          <td>{avg}</td>
+        </tr>
+        <tr>
+          <td>{statTextArr[2]}</td>
+          <td>{positive}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
 
 const NoFeedback = ({ text }) => <p>{text}</p>;
 
@@ -21,18 +50,23 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const all = good + neutral + bad;
-  const avg =
-    good || neutral || bad
+  const getAll = () => good + neutral + bad;
+  const getAvg = () => {
+    return good || neutral || bad
       ? (good * 1 + neutral * 0 + bad * -1) / (good + neutral + bad)
       : 0;
-  const positive =
-    good || neutral || bad ? (good / (good + neutral + bad)) * 100 + " %" : 0;
+  };
+  const getPositive = () => {
+    return good || neutral || bad
+      ? (good / (good + neutral + bad)) * 100 + " %"
+      : 0;
+  };
 
+  const valuesArr = [good, neutral, bad];
   const textArr = ["good", "neutral", "bad"];
   const statTextArr = ["all", "average", "positive"];
 
-  if (!good && !neutral && !bad) {
+  if (!getAll()) {
     return (
       <>
         <FeedbackHead headText="Give feedback" />
@@ -51,12 +85,14 @@ const App = () => {
         <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
         <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
         <StatText text="Statistics" />
-        <StatisticLine text={textArr[0]} value={good} />
-        <StatisticLine text={textArr[1]} value={neutral} />
-        <StatisticLine text={textArr[2]} value={bad} />
-        <StatisticLine text={statTextArr[0]} value={all} />
-        <StatisticLine text={statTextArr[1]} value={avg} />
-        <StatisticLine text={statTextArr[2]} value={positive} />
+        <StatisticsTable
+          valuesArr={valuesArr}
+          textsArr={textArr}
+          statTextArr={statTextArr}
+          all={getAll()}
+          avg={getAvg()}
+          positive={getPositive()}
+        />
       </>
     );
   }
