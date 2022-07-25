@@ -8,49 +8,20 @@ const Button = ({ handleClick, text }) => (
 
 const StatText = ({ text }) => <h2>{text}</h2>;
 
-const FeedbackValue = ({ text, values }) => {
-  const value =
-    text === "good" ? values[0] : text === "neutral" ? values[1] : values[2];
-
-  console.log("value", value);
-  if (!values[0] && !values[1] && !values[2]) {
-    return;
-  } else {
-    return (
-      <div>
-        <span>{text}</span> <span>{value}</span>
-      </div>
-    );
-  }
-};
-
-const FeedbackStatValue = ({ text, value }) => (
+const StatisticLine = ({ text, value }) => (
   <div>
     <span>{text}</span> <span>{value}</span>
   </div>
 );
 
-const Statistics = (props) => {
-  const { texts, good, neutral, bad, avg, positive } = props;
-
-  if (!good && !neutral && !bad) {
-    return <p>No feedback given</p>;
-  }
-
-  return (
-    <>
-      <FeedbackStatValue value={good + neutral + bad} text={texts[0]} />
-      <FeedbackStatValue value={avg} text={texts[1]} />
-      <FeedbackStatValue value={positive} text={texts[2]} />
-    </>
-  );
-};
+const NoFeedback = ({ text }) => <p>{text}</p>;
 
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const all = good + neutral + bad;
   const avg =
     good || neutral || bad
       ? (good * 1 + neutral * 0 + bad * -1) / (good + neutral + bad)
@@ -61,26 +32,34 @@ const App = () => {
   const textArr = ["good", "neutral", "bad"];
   const statTextArr = ["all", "average", "positive"];
 
-  return (
-    <>
-      <FeedbackHead headText="Give feedback" />
-      <Button text={textArr[0]} handleClick={() => setGood(good + 1)} />
-      <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
-      <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
-      <StatText text="Statistics" />
-      <FeedbackValue text={textArr[0]} values={[good, neutral, bad]} />
-      <FeedbackValue text={textArr[1]} values={[good, neutral, bad]} />
-      <FeedbackValue text={textArr[2]} values={[good, neutral, bad]} />
-      <Statistics
-        texts={statTextArr}
-        good={good}
-        neutral={neutral}
-        bad={bad}
-        avg={avg}
-        positive={positive}
-      />
-    </>
-  );
+  if (!good && !neutral && !bad) {
+    return (
+      <>
+        <FeedbackHead headText="Give feedback" />
+        <Button text={textArr[0]} handleClick={() => setGood(good + 1)} />
+        <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
+        <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
+        <StatText text="Statistics" />
+        <NoFeedback text="No feedback given" />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <FeedbackHead headText="Give feedback" />
+        <Button text={textArr[0]} handleClick={() => setGood(good + 1)} />
+        <Button text={textArr[1]} handleClick={() => setNeutral(neutral + 1)} />
+        <Button text={textArr[2]} handleClick={() => setBad(bad + 1)} />
+        <StatText text="Statistics" />
+        <StatisticLine text={textArr[0]} value={good} />
+        <StatisticLine text={textArr[1]} value={neutral} />
+        <StatisticLine text={textArr[2]} value={bad} />
+        <StatisticLine text={statTextArr[0]} value={all} />
+        <StatisticLine text={statTextArr[1]} value={avg} />
+        <StatisticLine text={statTextArr[2]} value={positive} />
+      </>
+    );
+  }
 };
 
 export default App;
