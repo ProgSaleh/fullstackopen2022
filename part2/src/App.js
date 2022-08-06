@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Form from "./components/Form";
 
+// already refactored!
+
 const Person = ({ person }) => (
   <p>
     {person.name} {person.phone}
