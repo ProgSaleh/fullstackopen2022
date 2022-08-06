@@ -7,12 +7,19 @@ const Person = ({ person }) => (
   </p>
 );
 
+const SearchField = ({ searchField, addSearch }) => (
+  <div>
+    search numbers by name: <input value={searchField} onChange={addSearch} />
+  </div>
+);
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Saleh Hussain", phone: "0500050055" },
   ]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [searchField, setSearchField] = useState("");
 
   const addPerson = (event) => setNewName(event.target.value);
 
@@ -37,9 +44,27 @@ const App = () => {
     setNewNumber("");
   };
 
+  const addSearch = (event) => {
+    setSearchField(event.target.value);
+
+    const searchedPerson = persons.find(
+      (p) => p.name.toLowerCase() === event.target.value.toLowerCase()
+    );
+    if (searchedPerson) {
+      setPersons([searchedPerson]);
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <SearchField searchField={searchField} addSearch={addSearch} />
+
+      <br />
+      <br />
+      <br />
+
       <Form
         addName={addFullPerson}
         newName={newName}
@@ -47,7 +72,9 @@ const App = () => {
         newNumber={newNumber}
         addNumber={addNumber}
       />
+
       <h2>numbers</h2>
+
       {persons.map((p) => (
         <Person
           /* key is NOT reliable... */ key={Math.random() * 10}
