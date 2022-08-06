@@ -11,6 +11,12 @@ const App = () => {
   };
 
   const addName = (event) => {
+    if (persons.some((p) => (p.name === newName ? true : false))) {
+      alert(`${newName} is already addid to phonebook!`);
+      event.preventDefault(); // to prevent reloading the page...
+      setNewName("");
+      return;
+    }
     event.preventDefault();
     const newPerson = { name: newName };
     // setPersons(persons.concat(newPerson));
