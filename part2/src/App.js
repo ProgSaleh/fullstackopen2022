@@ -1,17 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import Person from "./components/Person";
 import SearchField from "./components/SearchField";
+import axios from "axios";
 
 // already refactored!
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Saleh Hussain", phone: "0500050055" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchField, setSearchField] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((res) => {
+      if (res.data.length) {
+        setPersons(res.data);
+      }
+    });
+  }, []);
 
   const addPerson = (event) => setNewName(event.target.value);
 
