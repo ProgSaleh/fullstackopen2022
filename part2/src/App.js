@@ -3,6 +3,8 @@ import axios from "axios";
 import LengthWarning from "./components/LengthWarning";
 import Country from "./components/Country";
 
+// cannot solve [2.13*: Data for countries, step2]
+
 const SearchControl = ({ handleSearch }) => (
   <div>
     <label>
