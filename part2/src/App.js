@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import personService from "./services/personServices.js";
 
+// already extracted!
+
 const Person = ({ person }) => (
   <p>
     {person.name} {person.number}
