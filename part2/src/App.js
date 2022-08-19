@@ -3,6 +3,8 @@ import Form from "./components/Form";
 import personService from "./services/personServices.js";
 import { Notification } from "./components/Notification.js";
 
+// 2.20*: Phonebook step12 [NOT CLEAR.. didn't understand]!
+
 const Person = ({ person, deletePerson }) => (
   <div>
     <span>{person.name}</span> <span>{person.number}</span>{" "}
