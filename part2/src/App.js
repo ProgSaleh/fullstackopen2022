@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import personService from "./services/personServices.js";
-
-// already extracted!
+import { Notification } from "./components/Notification.js";
 
 const Person = ({ person, deletePerson }) => (
   <div>
@@ -23,10 +22,20 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchField, setSearchField] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const addPerson = (event) => setNewName(event.target.value);
 
   const addNumber = (event) => setNewNumber(event.target.value);
+
+  const ToastVisibilityHandler = () => {
+    console.log("in ToastVisibilityHandler()");
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3_000);
+  };
 
   useEffect(() => {
     personService.getPersons().then((res) => {
@@ -39,12 +48,6 @@ const App = () => {
       event.preventDefault(); // to prevent reloading the page...
       return;
     }
-    // if (persons.some((p) => (p.name === newName ? true : false))) {
-    //   alert(`(${newName}) is already added to phonebook!`);
-    //   event.preventDefault(); // to prevent reloading the page...
-    //   setNewName("");
-    //   return;
-    // }
 
     event.preventDefault();
 
@@ -55,7 +58,7 @@ const App = () => {
       if (window.confirm(msg)) {
         personService.replacePerson(newPerson).then((res) => {
           setPersons([...persons.filter((p) => p.id !== res.id), res]);
-          // console.log(res);
+          ToastVisibilityHandler();
         });
       } else {
         setNewName("");
@@ -66,6 +69,7 @@ const App = () => {
 
     personService.addPerson(newPerson).then((newPersonList) => {
       setPersons([...persons, newPersonList]);
+      ToastVisibilityHandler();
       setNewName("");
       setNewNumber("");
     });
@@ -85,6 +89,7 @@ const App = () => {
             personService.getPersons().then((res) => {
               setPersons(res);
             });
+            ToastVisibilityHandler();
           } else {
             console.log(res);
           }
@@ -107,6 +112,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification isVisible={showToast} />
 
       <SearchField searchField={searchField} addSearch={addSearch} />
 
