@@ -4,10 +4,11 @@ import personService from "./services/personServices.js";
 
 // already extracted!
 
-const Person = ({ person }) => (
-  <p>
-    {person.name} {person.number}
-  </p>
+const Person = ({ person, deletePerson }) => (
+  <div>
+    <span>{person.name}</span> <span>{person.number}</span>{" "}
+    <button onClick={deletePerson}>delete</button>
+  </div>
 );
 
 const SearchField = ({ searchField, addSearch }) => (
@@ -44,6 +45,7 @@ const App = () => {
       setNewName("");
       return;
     }
+
     event.preventDefault();
 
     const newPerson = { name: newName, phone: newNumber };
@@ -52,6 +54,28 @@ const App = () => {
       setNewName("");
       setNewNumber("");
     });
+  };
+
+  const deletePerson = (id) => {
+    const msg = `Delete ${persons.find((p) => p.id === id).name}?`;
+
+    if (window.confirm(msg)) {
+      const person = persons.find((p) => p.id === id);
+      if (person) {
+        personService.deletePerson(id).then((res) => {
+          if (res === 200) {
+            console.log("success!!!");
+
+            // get new persons list
+            personService.getPersons().then((res) => {
+              setPersons(res);
+            });
+          } else {
+            console.log(res);
+          }
+        });
+      }
+    }
   };
 
   const addSearch = (event) => {
@@ -87,6 +111,7 @@ const App = () => {
         <Person
           /* key is NOT reliable... */ key={Math.random() * 10}
           person={p}
+          deletePerson={() => deletePerson(p.id)}
         />
       ))}
     </div>
