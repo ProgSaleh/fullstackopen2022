@@ -1,12 +1,10 @@
 const Form = (props) => (
   <form onSubmit={props.addName}>
     <NameControl newName={props.newName} addPerson={props.addPerson} />
-    <br />
     <PhoneNumberControl
       newNumber={props.newNumber}
       addNumber={props.addNumber}
     />
-    <br />
     <SubmitControl />
   </form>
 );

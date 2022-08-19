@@ -1,78 +1,94 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import LengthWarning from "./components/LengthWarning";
-import Country from "./components/Country";
+import Form from "./components/Form";
+import personService from "./services/personServices.js";
 
-// cannot solve [2.13*: Data for countries, step2]
+const Person = ({ person }) => (
+  <p>
+    {person.name} {person.number}
+  </p>
+);
 
-const SearchControl = ({ handleSearch }) => (
+const SearchField = ({ searchField, addSearch }) => (
   <div>
-    <label>
-      find countries: <input onChange={handleSearch} type="text" />
-    </label>
+    <label>search numbers by name:</label>{" "}
+    <input value={searchField} onChange={addSearch} />
   </div>
 );
 
-const CountryName = ({ name }) => <li>{name}</li>;
-
-const ViewableList = ({ userInput, countries }) => {
-  let nameTexts = countries.map((c) => c.name.common);
-
-  const searchedCountryName = nameTexts.filter((name) =>
-    name.toLowerCase().includes(userInput.toLowerCase())
-  );
-
-  if (searchedCountryName && searchedCountryName.length) {
-    nameTexts = searchedCountryName;
-  }
-
-  const foundCountry = countries.find((c) =>
-    c.name.common.toLowerCase().startsWith(userInput.toLowerCase())
-  );
-
-  if (nameTexts.length <= 10) {
-    if (nameTexts.length === 1 && foundCountry) {
-      return <Country info={foundCountry} />;
-    }
-
-    return (
-      <ul>
-        {nameTexts.map((n) => (
-          <CountryName key={Math.random()} name={n} />
-        ))}
-      </ul>
-    );
-  } else if (userInput && userInput.length && searchedCountryName.length) {
-    return (
-      <div>
-        <LengthWarning />
-      </div>
-    );
-  }
-};
-
 const App = () => {
-  const [countries, setCountries] = useState([]);
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
   const [searchField, setSearchField] = useState("");
 
+  const addPerson = (event) => setNewName(event.target.value);
+
+  const addNumber = (event) => setNewNumber(event.target.value);
+
   useEffect(() => {
-    axios.get("https://restcountries.com/v3.1/all").then((response) => {
-      setCountries(response.data.filter((c) => c.name.common !== "Israel"));
+    personService.getPersons().then((res) => {
+      setPersons(res);
     });
   }, []);
 
-  if (countries && countries.length) {
-    const handleSearchField = (event) => {
-      setSearchField(event.target.value);
-    };
+  const addFullPerson = (event) => {
+    if (!newName || !newNumber) {
+      event.preventDefault(); // to prevent reloading the page...
+      return;
+    }
+    if (persons.some((p) => (p.name === newName ? true : false))) {
+      alert(`(${newName}) is already added to phonebook!`);
+      event.preventDefault(); // to prevent reloading the page...
+      setNewName("");
+      return;
+    }
+    event.preventDefault();
 
-    return (
-      <div>
-        <SearchControl handleSearch={handleSearchField} />
-        <ViewableList userInput={searchField} countries={countries} />
-      </div>
+    const newPerson = { name: newName, phone: newNumber };
+    personService.addPerson(newPerson).then((newPersonList) => {
+      setPersons([newPersonList]);
+      setNewName("");
+      setNewNumber("");
+    });
+  };
+
+  const addSearch = (event) => {
+    setSearchField(event.target.value);
+
+    const searchedPerson = persons.find(
+      (p) => p.name.toLowerCase() === event.target.value.toLowerCase()
     );
-  }
+    if (searchedPerson) {
+      setPersons([searchedPerson]);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+
+      <SearchField searchField={searchField} addSearch={addSearch} />
+
+      <br />
+
+      <Form
+        addName={addFullPerson}
+        newName={newName}
+        addPerson={addPerson}
+        newNumber={newNumber}
+        addNumber={addNumber}
+      />
+
+      <h2>numbers</h2>
+
+      {persons.map((p) => (
+        <Person
+          /* key is NOT reliable... */ key={Math.random() * 10}
+          person={p}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default App;
