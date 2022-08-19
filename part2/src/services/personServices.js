@@ -17,4 +17,14 @@ const deletePerson = (id) => {
   });
 };
 
-export default { getPersons, addPerson, deletePerson };
+const replacePerson = async (newPerson) => {
+  const persons = await axios.get(baseUrl).then((res) => res.data);
+
+  const repetitive = persons.find((p) => p.name === newPerson.name);
+  if (repetitive) {
+    const request = axios.put(`${baseUrl}/${repetitive.id}`, newPerson);
+    return request.then((res) => res.data);
+  }
+};
+
+export default { getPersons, addPerson, deletePerson, replacePerson };

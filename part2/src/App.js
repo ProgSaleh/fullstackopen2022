@@ -39,18 +39,33 @@ const App = () => {
       event.preventDefault(); // to prevent reloading the page...
       return;
     }
-    if (persons.some((p) => (p.name === newName ? true : false))) {
-      alert(`(${newName}) is already added to phonebook!`);
-      event.preventDefault(); // to prevent reloading the page...
-      setNewName("");
-      return;
-    }
+    // if (persons.some((p) => (p.name === newName ? true : false))) {
+    //   alert(`(${newName}) is already added to phonebook!`);
+    //   event.preventDefault(); // to prevent reloading the page...
+    //   setNewName("");
+    //   return;
+    // }
 
     event.preventDefault();
 
-    const newPerson = { name: newName, phone: newNumber };
+    const newPerson = { name: newName, number: newNumber };
+
+    if (persons.find((p) => p.name === newPerson.name)) {
+      const msg = `${newName} is already added to the phonebook, replace the old one with a new one?`;
+      if (window.confirm(msg)) {
+        personService.replacePerson(newPerson).then((res) => {
+          setPersons([...persons.filter((p) => p.id !== res.id), res]);
+          // console.log(res);
+        });
+      } else {
+        setNewName("");
+        setNewNumber("");
+        return;
+      }
+    }
+
     personService.addPerson(newPerson).then((newPersonList) => {
-      setPersons([newPersonList]);
+      setPersons([...persons, newPersonList]);
       setNewName("");
       setNewNumber("");
     });
