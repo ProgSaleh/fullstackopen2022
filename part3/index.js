@@ -3,6 +3,11 @@ const app = express();
 
 const persons = [
   {
+    id: 0,
+    name: "Saleh Hussain",
+    number: "020211",
+  },
+  {
     id: 1,
     name: "Arto Hellas",
     number: "040-123456",
@@ -37,6 +42,17 @@ app.get("/info", (req, res) => {
   res.send(
     `<div><h3>Phonebook has info for ${currentLength} people</h3><h3>${date}</h3></div>`
   );
+});
+
+app.get("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const person = persons.find((p) => p.id === id);
+
+  if (!person) {
+    res.status(404).end();
+  }
+
+  res.json(person);
 });
 
 const PORT = 3001;
