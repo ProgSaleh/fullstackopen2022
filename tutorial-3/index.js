@@ -1,5 +1,8 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
+
+app.use(cors()); // allow requests from all origins and not only samr origin.
 
 // to automatically parse all stringified objects coming from the frontend.
 app.use(express.json());
@@ -80,7 +83,7 @@ const generateId = () => {
   return maxId + 1;
 };
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
