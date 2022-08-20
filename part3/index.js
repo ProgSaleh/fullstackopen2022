@@ -62,6 +62,32 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
+app.post("/api/persons/", (req, res) => {
+  const newPerson = req.body;
+
+  if (!newPerson.name) {
+    res.status(400).json({ error: "missing name!!!" });
+  }
+
+  const person = {
+    id: getNewId(),
+    name: newPerson.name,
+    number: newPerson.number, // consider that a number IS available
+  };
+
+  persons = [...persons, person];
+  res.json(persons); // return the updated list.
+});
+
+//
+// util functions
+//
+
+const getNewId = () =>
+  persons.length
+    ? Math.floor(Math.random() * Math.max(...persons.map((p) => p.id)) + 99)
+    : 0;
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
