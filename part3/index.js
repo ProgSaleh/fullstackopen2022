@@ -65,14 +65,22 @@ app.delete("/api/persons/:id", (req, res) => {
 app.post("/api/persons/", (req, res) => {
   const newPerson = req.body;
 
-  if (!newPerson.name) {
-    res.status(400).json({ error: "missing name!!!" });
+  if (!newPerson.name || !newPerson.number) {
+    return res
+      .status(400)
+      .json({ error: "Please provide correct name and number!" });
+  }
+
+  if (persons.find((p) => p.name === newPerson.name)) {
+    return res
+      .status(400)
+      .json({ error: `(${newPerson.name}) already exists!` });
   }
 
   const person = {
     id: getNewId(),
     name: newPerson.name,
-    number: newPerson.number, // consider that a number IS available
+    number: newPerson.number,
   };
 
   persons = [...persons, person];
