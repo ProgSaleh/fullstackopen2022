@@ -7,6 +7,12 @@ app.use(cors()); // allow requests from all origins and not only samr origin.
 // to automatically parse all stringified objects coming from the frontend.
 app.use(express.json());
 
+// Whenever express receives a GET req,
+// it'll look into the "build" folder;
+// if any file corresponds to the req address,
+// express will return it to the browser.
+app.use(express.static("build")); // to serve the built version of front-end.
+
 let notes = [
   {
     id: 1,
